@@ -1,7 +1,6 @@
-Tips
-====
-Create database:
-    npm run setup
+# Getting stared
+* Create database:
+  > npm run setup
 
-Start backend using
-    npm start
+* Start backend using
+  > npm start
