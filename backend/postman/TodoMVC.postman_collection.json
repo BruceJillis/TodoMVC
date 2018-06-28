@@ -1,0 +1,431 @@
+{
+	"info": {
+		"_postman_id": "84ff6cec-0309-474f-967b-28bc0176b139",
+		"name": "TodoMVC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f9f6a247-a73c-41c6-a066-11be8de054e8",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var text = pm.globals.get(\"TODO_TEXT\")",
+							"pm.test(\"Todo has correct description (\"+text+\")\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.description).to.eql(text);",
+							"    pm.globals.set(\"TODO_ID\", jsonData.id);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e18debe5-7324-496e-9955-e0f778678c35",
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.set(\"TODO_TEXT\", \"A test todo\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"description\": \"{{TODO_TEXT}}\"\n}"
+				},
+				"url": {
+					"raw": "{{environment}}/todos",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aefc1254-c3e4-4664-9f27-6ec5f3bbe484",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response is an array\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData instanceof Array).to.eql(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{environment}}/todos",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get By Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8adb6887-38e9-488a-a8f0-e20c3e6c77e5",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var id = pm.globals.get(\"TODO_ID\");",
+							"var text = pm.globals.get(\"TODO_TEXT\")",
+							"pm.test(\"Todo has correct id and description (\"+id+\", \"+text+\")\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.description).to.eql(text);",
+							"    pm.expect(jsonData.id).to.eql(id);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "db6b4e3f-ac22-49e1-b66d-671c929bff3b",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{environment}}/todos/{{TODO_ID}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"todos",
+						"{{TODO_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get By Id (NOK: doesn't exist)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "524eb9f4-d706-45d0-b41d-472a202e0580",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Todo not found\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Todo not found!\");",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "db6b4e3f-ac22-49e1-b66d-671c929bff3b",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{environment}}/todos/1235{{TODO_ID}}99543",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"todos",
+						"1235{{TODO_ID}}99543"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update By Id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "64e5bd80-98e5-453d-8979-044c75a4c16d",
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.set(\"TODO_TEXT2\", \"updated Todo description\");"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "edf3b9f1-37b5-4951-a5a8-33e89f156303",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"var id = pm.globals.get(\"TODO_ID\");",
+							"var text = pm.globals.get(\"TODO_TEXT2\")",
+							"pm.test(\"Todo has correct id and description (\"+id+\", \"+text+\")\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.description).to.eql(text);",
+							"    pm.expect(jsonData.id).to.eql(id);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"description\": \"{{TODO_TEXT2}}\"\n}"
+				},
+				"url": {
+					"raw": "{{environment}}/todos/{{TODO_ID}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"todos",
+						"{{TODO_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update By Id (NOK: doesn't exist)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "64e5bd80-98e5-453d-8979-044c75a4c16d",
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.set(\"TODO_TEXT2\", \"updated Todo description\");"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "17af87cf-5149-4f47-9051-6bf1e851e122",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Todo not found\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Todo not found!\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"description\": \"{{TODO_TEXT2}}\"\n}"
+				},
+				"url": {
+					"raw": "{{environment}}/todos/980923{{TODO_ID}}123213",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"todos",
+						"980923{{TODO_ID}}123213"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ce083d7e-eb0e-4f44-a319-01fc02fd63d2",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Todo has been destroyed\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Todo destroyed!\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{environment}}/todos/{{TODO_ID}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"todos",
+						"{{TODO_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Todo (NOK: doesn't exist)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "164c9daf-b33b-49a8-83df-0341052ca5df",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Todo not found\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Todo not found!\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{environment}}/todos/123898{{TODO_ID}}12321",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"todos",
+						"123898{{TODO_ID}}12321"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "4955946f-1a4e-4113-9835-097e949eaac8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "03475470-ce3c-4a9f-aee8-757d455d5a4e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "746fc9a6-d5ab-4edd-8604-d6a290fd7a02",
+			"key": "environment",
+			"value": "http://localhost:8080/api",
+			"type": "string",
+			"description": ""
+		}
+	]
+}
