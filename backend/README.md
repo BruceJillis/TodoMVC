@@ -1,8 +1,7 @@
 Tips
 ====
-Start backend using
-    npm start
+Create database:
+    npm run setup
 
-Set PORT on windows using:
-    set PORT='1234'
+Start backend using
     npm start

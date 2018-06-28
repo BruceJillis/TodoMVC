@@ -3,8 +3,7 @@ const ORM = require("../orm");
 
 const Todo = ORM.define("todo", {
   "description": Sequelize.STRING,
-  "done": Sequelize.BOOLEAN
+  "done": { "type": Sequelize.BOOLEAN, "defaultValue": false }
 });
-Todo.sync({ "force": true });
 
 module.exports = Todo;

@@ -30,10 +30,67 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "e18debe5-7324-496e-9955-e0f778678c35",
+						"id": "98ac39d7-de73-41e3-aa53-87a249ff33c5",
 						"type": "text/javascript",
 						"exec": [
-							"pm.globals.set(\"TODO_TEXT\", \"A test todo\");"
+							"pm.globals.set(\"TODO_TEXT\", \"Test todo #\" + Math.round(Math.random() * 10000));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"description\": \"{{TODO_TEXT}}\"\n}"
+				},
+				"url": {
+					"raw": "{{environment}}/todos",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Multiple Todos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4bf1db38-d0e0-4666-8bcd-558b6bd51a31",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var id = pm.globals.get(\"TODO_ID\");",
+							"var text = pm.globals.get(\"TODO_TEXT\")",
+							"pm.test(\"Todo has id not equal to \"+id, function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.not.eql(id);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "39aa0006-c462-4efe-9688-7123f466ba58",
+						"type": "text/javascript",
+						"exec": [
+							""
 						]
 					}
 				}
@@ -421,9 +478,16 @@
 	],
 	"variable": [
 		{
-			"id": "746fc9a6-d5ab-4edd-8604-d6a290fd7a02",
+			"id": "9b1de61f-281c-40e8-9742-27b886e57239",
 			"key": "environment",
-			"value": "http://localhost:8080/api",
+			"value": "http://localhost:{{port}}/api",
+			"type": "string",
+			"description": ""
+		},
+		{
+			"id": "ae1d123c-68cb-45b7-9989-823fc8973835",
+			"key": "port",
+			"value": "8081",
 			"type": "string",
 			"description": ""
 		}

@@ -7,6 +7,9 @@
   "parserOptions": {
     "ecmaVersion": 6
   },
+  "plugins": [
+    "chai-friendly"
+  ],
   "rules": {
     "indent": ["error", 2],
     "linebreak-style": ["error", "windows"],
@@ -14,6 +17,8 @@
     "semi": ["error", "always"],
     "curly": "error",
     "no-console": "off",
+    "no-unused-expressions": 0,
+    "chai-friendly/no-unused-expressions": 2,
     "no-var": 2,
     "quote-props": 2
   }
