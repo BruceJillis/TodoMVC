@@ -1,4 +1,4 @@
-# Getting stared
+# Getting started
 * Create database:
   > npm run setup
 
