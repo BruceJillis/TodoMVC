@@ -77,7 +77,7 @@ const TodoController = function() {
             });
           } else {
             todo.destroy();
-            res.send({
+            res.json({
               "message": "Todo destroyed!"
             });
           }
